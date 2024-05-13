@@ -1,0 +1,306 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Task Manager API",
+      "version": "1.0.0",
+      "description": "This API manages tasks for users. It supports operations such as creating, retrieving, updating, and deleting tasks."
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000",
+        "description": "Local development server"
+      }
+    ],
+    "paths": {
+      "/signup": {
+        "post": {
+          "summary": "Create a new user account",
+          "description": "Registers a new user with a username and password.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "username": "newuser",
+                    "password": "userpass"
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "User created successfully"
+            },
+            "400": {
+              "description": "Bad request if parameters are not valid"
+            },
+            "500": {
+              "description": "Server error if registration fails"
+            }
+          }
+        }
+      },
+      "/login": {
+        "post": {
+          "summary": "Authenticate user",
+          "description": "Logs in a user by username and password.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "username": "newuser",
+                    "password": "userpass"
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Authentication successful",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "accessToken": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Authentication failed"
+            },
+            "500": {
+              "description": "Server error"
+            }
+          }
+        }
+      },
+      "/tasks": {
+        "get": {
+          "summary": "List all tasks for authenticated user",
+          "description": "Retrieves a list of tasks associated with the authenticated user.",
+          "responses": {
+            "200": {
+              "description": "A list of tasks",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "priority": {
+                          "type": "string"
+                        },
+                        "category": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "due_date": {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized if user is not logged in"
+            },
+            "404": {
+              "description": "No tasks found"
+            },
+            "500": {
+              "description": "Server error"
+            }
+          }
+        },
+        "post": {
+          "summary": "Create a new task for authenticated user",
+          "description": "Creates a new task with the given details for the authenticated user.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "priority": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "due_date": {
+                      "type": "string",
+                      "format": "date"
+                    }
+                  },
+                  "example": {
+                    "title": "Complete Project",
+                    "description": "Finish the final touches on the project.",
+                    "priority": "High",
+                    "category": "Work",
+                    "status": "Pending",
+                    "due_date": "2024-12-31"
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Task created successfully"
+            },
+            "400": {
+              "description": "Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized if user is not logged in"
+            },
+            "500": {
+              "description": "Server error if task creation fails"
+            }
+          }
+        }
+      },
+      "/tasks/{id}": {
+        "put": {
+          "summary": "Update a task",
+          "description": "Updates an existing task identified by its ID for the authenticated user.",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID of the task to update",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "priority": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "due_date": {
+                      "type": "string",
+                      "format": "date"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Task updated successfully"
+            },
+            "400": {
+              "description": "Invalid input"
+            },
+            "404": {
+              "description": "Task not found"
+            },
+            "500": {
+              "description": "Server error if task update fails"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete a task",
+          "description": "Deletes a task identified by its ID for the authenticated user.",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID of the task to delete",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Task deleted successfully"
+            },
+            "404": {
+              "description": "Task not found"
+            },
+            "500": {
+              "description": "Server error if task deletion fails"
+            }
+          }
+        }
+      }
+    }
+  }
+  
