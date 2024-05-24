@@ -133,6 +133,33 @@ router.get('/tasks', authenticateToken, async (req, res) => {
   }
 });
 
+//Getting the task details for that one particular Task
+router.get('/tasks/:id', authenticateToken, async (req, res) => {
+  // Extracting the ID from the URL parameter
+  const taskId = req.params.id;
+  
+  try {
+    // Fetching the specific task that belongs to the logged-in user
+    const task = await db('tasks').where({ id: taskId, user_id: req.user.id }).first();
+    
+    // Checking if the task exists
+    if (!task) {
+      console.log('No task found for the user with ID:', taskId);
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    
+    // Responding with the task data if found
+    console.log('Task fetched successfully:', task);
+    res.json(task);
+  } catch (err) {
+    console.error('Error on server while fetching task:', err);
+    res.status(500).json({ message: 'Error fetching task from the database' });
+  }
+});
+
+
+//Route to modify that task 
+
 router.put('/tasks/:id', authenticateToken, async (req, res) => {
   const { title, description, priority, category, status, due_date } = req.body;
   try {
